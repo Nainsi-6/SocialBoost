@@ -1,5 +1,3 @@
-
-
 'use client';
 
 import Link from 'next/link';
@@ -25,9 +23,9 @@ function getPlatformIcon(slug: string) {
     case 'facebook':
       return <FaFacebook className={`${base} text-blue-600`} />;
     case 'tiktok':
-      return <FaTiktok className={`${base} text-black`} />;
+      return <FaTiktok className={`${base} text-gray-800`} />;
     case 'twitter':
-      return <FaXTwitter className={`${base} text-black`} />;
+      return <FaXTwitter className={`${base} text-sky-500`} />;
     case 'spotify':
       return <FaSpotify className={`${base} text-green-600`} />;
     default:
@@ -35,57 +33,38 @@ function getPlatformIcon(slug: string) {
   }
 }
 
-function getGradient(slug: string) {
-  switch (slug) {
-    case 'instagram':
-      return "from-pink-600 to-purple-600";
-    case 'youtube':
-      return "from-red-600 to-red-700";
-    case 'facebook':
-      return "from-blue-600 to-blue-700";
-    case 'tiktok':
-      return "from-gray-900 to-black";
-    case 'twitter':
-      return "from-gray-700 to-gray-800";
-    case 'spotify':
-      return "from-green-600 to-green-700";
-    default:
-      return "from-slate-700 to-slate-800";
-  }
-}
-
 export default function ServiceCard({ service }: { service: Service }) {
   return (
-    <Link href={`/${service.slug}`} className="block">
+    <Link href={`/${service.slug}`} className="block group">
       <div
-        className={`
+        className="
           flex flex-col items-center justify-center text-center
           p-3 sm:p-6
           rounded-xl
-          bg-gradient-to-br ${getGradient(service.slug)}
-          border border-white/10
-          hover:border-white/20
+          bg-white
+          border border-gray-200
+          hover:shadow-lg
           transition-all duration-300
-          hover:-translate-y-1 hover:shadow-lg
-        `}
+          hover:-translate-y-1
+        "
       >
         {/* ICON */}
-        <div className="w-10 h-10 sm:w-12 sm:h-12 flex items-center justify-center rounded-lg bg-white shadow mb-2 sm:mb-4">
+        <div className={`w-10 h-10 sm:w-12 sm:h-12 flex items-center justify-center rounded-lg ${service.accentBgLight} mb-2 sm:mb-4`}>
           {getPlatformIcon(service.slug)}
         </div>
 
         {/* TITLE */}
-        <h3 className="text-xs sm:text-lg font-semibold text-white">
+        <h3 className="text-xs sm:text-lg font-semibold text-gray-800">
           {service.name}
         </h3>
 
         {/* DESKTOP CONTENT ONLY */}
         <div className="hidden sm:block">
-          <p className="text-white/90 text-sm mt-2 mb-4">
+          <p className="text-gray-500 text-sm mt-2 mb-4">
             {service.description}
           </p>
 
-          <div className="flex items-center justify-between text-sm font-medium text-white">
+          <div className={`flex items-center justify-center gap-2 text-sm font-medium ${service.accentText}`}>
             <span>View Plans</span>
             <ArrowRight
               size={16}

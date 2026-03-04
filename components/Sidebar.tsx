@@ -12,7 +12,7 @@ const menuItems = [
   { href: '/about', label: 'About', icon: Info },
 ];
 
-export default function Sidebar({ isOpen, setIsOpen }) {
+export default function Sidebar({ isOpen, setIsOpen }: { isOpen: boolean; setIsOpen: (v: boolean) => void }) {
   const pathname = usePathname();
 
   const isActive = (href: string) =>
@@ -20,10 +20,9 @@ export default function Sidebar({ isOpen, setIsOpen }) {
 
   return (
     <>
-      {/* Backdrop */}
       {isOpen && (
         <div
-          className="fixed inset-0 bg-black/50 backdrop-blur-sm z-40"
+          className="fixed inset-0 bg-black/30 backdrop-blur-sm z-40"
           onClick={() => setIsOpen(false)}
         />
       )}
@@ -31,24 +30,22 @@ export default function Sidebar({ isOpen, setIsOpen }) {
       <aside
         className={`fixed top-0 right-0 h-screen
         w-64 sm:w-72
-        bg-gradient-to-b from-slate-900 to-slate-800
-        border-l border-slate-700
+        bg-white
+        border-l border-gray-200
         flex flex-col shadow-2xl z-50
         transform transition-transform duration-300 ease-in-out
         ${isOpen ? 'translate-x-0' : 'translate-x-full'}
         `}
       >
-        {/* Close button */}
-        <div className="flex justify-end p-4 sm:p-6 border-b border-slate-700">
+        <div className="flex justify-end p-4 sm:p-6 border-b border-gray-100">
           <button
             onClick={() => setIsOpen(false)}
-            className="text-slate-400 hover:text-white transition"
+            className="text-gray-400 hover:text-gray-700 transition"
           >
             <X size={20} />
           </button>
         </div>
 
-        {/* Menu */}
         <nav className="flex-1 p-3 sm:p-4 space-y-1 sm:space-y-2">
           {menuItems.map((item) => {
             const Icon = item.icon;
@@ -65,10 +62,9 @@ export default function Sidebar({ isOpen, setIsOpen }) {
                   rounded-lg
                   text-sm sm:text-base
                   transition-all
-                  ${
-                    active
-                      ? 'bg-blue-600 text-white'
-                      : 'text-slate-300 hover:bg-slate-700'
+                  ${active
+                    ? 'bg-amber-500 text-white font-semibold'
+                    : 'text-gray-600 hover:bg-amber-50'
                   }
                 `}
               >

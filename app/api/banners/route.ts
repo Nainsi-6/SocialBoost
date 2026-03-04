@@ -1,67 +1,26 @@
-import { headers } from 'next/headers';
+// ============================================
+// Next.js API Route: GET /api/banners
+// BFF proxy: Frontend → Next.js → Express backend
+// ============================================
 
-// Mock banners data - will be replaced with database queries
-const mockBanners = [
-  {
-    id: 1,
-    title: "WHAT'S NEW..?",
-    subtitle: "NOW YOU CAN PLACE YOUR ORDER EASILY THROUGH WHATSAPP!",
-    buttonText: "Buy Now Via Whatsapp",
-    buttonLink: "https://wa.me/your-whatsapp-number",
-    imageUrl: "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/banner-orange-woman.jpg",
-    backgroundColor: "from-orange-400 to-orange-600",
-    order: 1,
-    active: true,
-  },
-  {
-    id: 2,
-    title: "RAMADAN SPECIAL",
-    subtitle: "Get up to 50% off on all Instagram packages",
-    buttonText: "Shop Now",
-    buttonLink: "/instagram",
-    imageUrl: "https://images.unsplash.com/photo-1611532736579-6b16e2b50449?w=1200&h=400&fit=crop",
-    backgroundColor: "from-pink-400 to-rose-600",
-    order: 2,
-    active: true,
-  },
-];
+import { NextResponse } from 'next/server';
+
+const BACKEND_URL = process.env.BACKEND_URL || 'http://localhost:5000';
 
 export async function GET() {
   try {
-    // TODO: Replace with actual database query
-    // const banners = await db.query('SELECT * FROM banners WHERE active = true ORDER BY order ASC');
-    
-    return Response.json({
-      success: true,
-      data: mockBanners,
+    const response = await fetch(`${BACKEND_URL}/api/banners`, {
+      headers: { 'Content-Type': 'application/json' },
+      cache: 'no-store',
     });
-  } catch (error) {
-    console.error('Error fetching banners:', error);
-    return Response.json(
-      { success: false, error: 'Failed to fetch banners' },
-      { status: 500 }
-    );
-  }
-}
 
-export async function POST(request: Request) {
-  try {
-    const body = await request.json();
-    
-    // TODO: Add authentication check
-    // TODO: Validate banner data
-    // TODO: Save to database
-    
-    return Response.json({
-      success: true,
-      message: 'Banner created successfully',
-      data: body,
-    });
+    const data = await response.json();
+    return NextResponse.json(data, { status: response.status });
   } catch (error) {
-    console.error('Error creating banner:', error);
-    return Response.json(
-      { success: false, error: 'Failed to create banner' },
-      { status: 500 }
+    console.error('[API /banners] Error:', error);
+    return NextResponse.json(
+      { success: true, data: [] },
+      { status: 200 }
     );
   }
 }

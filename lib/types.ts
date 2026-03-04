@@ -6,6 +6,10 @@ export interface Package {
   description: string;
   deliveryTime: string;
   quality: string;
+  /** SSM panel service ID for backend */
+  ssmServiceId?: number;
+  /** Service category: followers, likes, comments, views */
+  serviceCategory?: 'followers' | 'likes' | 'comments' | 'views';
 }
 
 export interface Service {
@@ -13,10 +17,15 @@ export interface Service {
   name: string;
   slug: string;
   icon: string;
-  isOfferActive?: boolean;
   description: string;
   isPrimary: boolean;
   bgGradient: string;
+  /** Tailwind classes for primary accent (buttons, CTA) e.g. "bg-pink-500 hover:bg-pink-600" */
+  accentColor: string;
+  /** Tailwind text color class e.g. "text-pink-600" */
+  accentText: string;
+  /** Tailwind light bg for badges/pills e.g. "bg-pink-50" */
+  accentBgLight: string;
   packages: Package[];
 }
 
@@ -29,7 +38,11 @@ export interface Order {
   quantity: number;
   price: number;
   instagramProfile?: string;
-  status: 'pending' | 'processing' | 'completed';
+  status: 'pending' | 'processing' | 'completed' | 'failed';
   timestamp: number;
   date: string;
+  /** Backend order ID (UUID) */
+  backendOrderId?: string;
+  /** ZapUPI payment URL */
+  paymentUrl?: string;
 }

@@ -8,8 +8,10 @@ export const services: Service[] = [
     icon: '📷',
     description: 'Followers, likes, and more.',
     isPrimary: true,
-    isOfferActive: true,
-    bgGradient: 'from-blue-600 to-blue-800',
+    bgGradient: 'from-pink-500 to-purple-600',
+    accentColor: 'bg-pink-500 hover:bg-pink-600',
+    accentText: 'text-pink-600',
+    accentBgLight: 'bg-pink-50',
     packages: [
       {
         id: 'ig-50f',
@@ -19,6 +21,8 @@ export const services: Service[] = [
         description: 'Mixed High Quality Followers',
         deliveryTime: '1-3 days',
         quality: 'Mixed Quality',
+        serviceCategory: 'followers',
+        ssmServiceId: 1,
       },
       {
         id: 'ig-100f',
@@ -28,6 +32,8 @@ export const services: Service[] = [
         description: 'Mixed High Quality Followers',
         deliveryTime: '1-3 days',
         quality: 'Mixed Quality',
+        serviceCategory: 'followers',
+        ssmServiceId: 1,
       },
       {
         id: 'ig-500f',
@@ -37,6 +43,8 @@ export const services: Service[] = [
         description: 'Indian Real Non-drop Followers',
         deliveryTime: '2-5 days',
         quality: 'Real Quality',
+        serviceCategory: 'followers',
+        ssmServiceId: 2,
       },
       {
         id: 'ig-1000f',
@@ -46,6 +54,8 @@ export const services: Service[] = [
         description: 'Indian Real Non-drop Followers',
         deliveryTime: '3-7 days',
         quality: 'Real Quality',
+        serviceCategory: 'followers',
+        ssmServiceId: 2,
       },
       {
         id: 'ig-2000f',
@@ -55,6 +65,8 @@ export const services: Service[] = [
         description: 'Indian Real Non-drop Followers',
         deliveryTime: '5-10 days',
         quality: 'Real Quality',
+        serviceCategory: 'followers',
+        ssmServiceId: 2,
       },
       {
         id: 'ig-100l',
@@ -64,6 +76,8 @@ export const services: Service[] = [
         description: 'High Quality Likes',
         deliveryTime: '1-2 days',
         quality: 'Mixed Quality',
+        serviceCategory: 'likes',
+        ssmServiceId: 3,
       },
       {
         id: 'ig-500l',
@@ -73,6 +87,8 @@ export const services: Service[] = [
         description: 'High Quality Likes',
         deliveryTime: '2-4 days',
         quality: 'Mixed Quality',
+        serviceCategory: 'likes',
+        ssmServiceId: 3,
       },
       {
         id: 'ig-1000l',
@@ -82,6 +98,8 @@ export const services: Service[] = [
         description: 'High Quality Likes',
         deliveryTime: '3-5 days',
         quality: 'Mixed Quality',
+        serviceCategory: 'likes',
+        ssmServiceId: 3,
       },
       {
         id: 'ig-100c',
@@ -91,6 +109,8 @@ export const services: Service[] = [
         description: 'Real Comments',
         deliveryTime: '2-5 days',
         quality: 'Real Quality',
+        serviceCategory: 'comments',
+        ssmServiceId: 4,
       },
       {
         id: 'ig-500c',
@@ -100,6 +120,8 @@ export const services: Service[] = [
         description: 'Real Comments',
         deliveryTime: '5-10 days',
         quality: 'Real Quality',
+        serviceCategory: 'comments',
+        ssmServiceId: 4,
       },
       {
         id: 'ig-1000v',
@@ -109,6 +131,8 @@ export const services: Service[] = [
         description: 'High Quality Views',
         deliveryTime: '1-2 days',
         quality: 'Mixed Quality',
+        serviceCategory: 'views',
+        ssmServiceId: 5,
       },
       {
         id: 'ig-5000v',
@@ -118,6 +142,8 @@ export const services: Service[] = [
         description: 'High Quality Views',
         deliveryTime: '2-4 days',
         quality: 'Mixed Quality',
+        serviceCategory: 'views',
+        ssmServiceId: 5,
       },
     ],
   },
@@ -128,7 +154,10 @@ export const services: Service[] = [
     icon: '▶️',
     description: 'Best video content daily.',
     isPrimary: false,
-    bgGradient: 'from-red-600 to-red-800',
+    bgGradient: 'from-red-500 to-red-700',
+    accentColor: 'bg-red-500 hover:bg-red-600',
+    accentText: 'text-red-600',
+    accentBgLight: 'bg-red-50',
     packages: [
       {
         id: 'yt-100s',
@@ -185,6 +214,9 @@ export const services: Service[] = [
     description: 'Connect with friends and family.',
     isPrimary: false,
     bgGradient: 'from-blue-500 to-blue-700',
+    accentColor: 'bg-blue-500 hover:bg-blue-600',
+    accentText: 'text-blue-600',
+    accentBgLight: 'bg-blue-50',
     packages: [
       {
         id: 'fb-100f',
@@ -222,7 +254,10 @@ export const services: Service[] = [
     icon: '🎵',
     description: 'Short-form video content.',
     isPrimary: false,
-    bgGradient: 'from-black to-gray-800',
+    bgGradient: 'from-gray-900 to-black',
+    accentColor: 'bg-gray-800 hover:bg-gray-900',
+    accentText: 'text-gray-800',
+    accentBgLight: 'bg-gray-100',
     packages: [
       {
         id: 'tt-100f',
@@ -260,7 +295,10 @@ export const services: Service[] = [
     icon: '𝕏',
     description: 'Share your thoughts instantly.',
     isPrimary: false,
-    bgGradient: 'from-gray-700 to-gray-900',
+    bgGradient: 'from-sky-400 to-sky-600',
+    accentColor: 'bg-sky-500 hover:bg-sky-600',
+    accentText: 'text-sky-600',
+    accentBgLight: 'bg-sky-50',
     packages: [
       {
         id: 'tw-100f',
@@ -290,6 +328,9 @@ export const services: Service[] = [
     description: 'Boost your music streams.',
     isPrimary: false,
     bgGradient: 'from-green-500 to-green-700',
+    accentColor: 'bg-green-500 hover:bg-green-600',
+    accentText: 'text-green-600',
+    accentBgLight: 'bg-green-50',
     packages: [
       {
         id: 'sp-100s',
