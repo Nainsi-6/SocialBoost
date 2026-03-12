@@ -2,7 +2,7 @@
 
 import { useEffect, useState, Suspense } from 'react';
 import { getAllOrders } from '@/lib/order-manager';
-import { Order } from '@/lib/types';
+import { Order } from '@/admin_frontend/lib/types';
 import { useSearchParams } from 'next/navigation';
 import {
   CheckCircle,

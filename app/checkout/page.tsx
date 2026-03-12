@@ -1,11 +1,11 @@
 'use client';
 
 import { useSearchParams, useRouter } from 'next/navigation';
-import { useState, Suspense, useEffect, useCallback, useRef } from 'react';
+import { useState, Suspense, useEffect, useRef } from 'react';
 import { getServiceBySlug } from '@/lib/services-data';
 import { createOrder as createLocalOrder } from '@/lib/order-manager';
-import { Service, Package as PackageType } from '@/lib/types';
-import { useCreateOrder, useValidateLink, useOrder } from '@/hooks/use-orders';
+import { Service, Package as PackageType } from '@/admin_frontend/lib/types';
+import { useCreateOrder, useOrder } from '@/hooks/use-orders';
 import {
   CheckCircle,
   ArrowLeft,
@@ -22,8 +22,7 @@ function CheckoutContent() {
   const searchParams = useSearchParams();
   const router = useRouter();
   const [profileLink, setProfileLink] = useState('');
-  const [linkError, setLinkError] = useState('');
-  const [linkValid, setLinkValid] = useState(false);
+  const [orderError, setOrderError] = useState('');
   const [phase, setPhase] = useState<CheckoutPhase>('form');
   const [paymentUrl, setPaymentUrl] = useState<string | null>(null);
   const [backendOrderId, setBackendOrderId] = useState<string | null>(null);
@@ -36,7 +35,6 @@ function CheckoutContent() {
   const [selectedPackage, setSelectedPackage] = useState<PackageType | null>(null);
 
   const createOrderMutation = useCreateOrder();
-  const validateLinkMutation = useValidateLink();
   const { data: orderData } = useOrder(backendOrderId, phase === 'payment' || phase === 'processing');
 
   useEffect(() => {
@@ -45,12 +43,32 @@ function CheckoutContent() {
       if (svc) {
         setService(svc);
         if (packageId) {
-          const pkg = svc.packages.find((p) => p.id === packageId);
-          if (pkg) setSelectedPackage(pkg);
+          // Special offer: package starts with 'offer-', build from URL params
+          if (packageId.startsWith('offer-')) {
+            const offServiceId = parseInt(searchParams.get('serviceId') ?? '0', 10);
+            const offQuantity = parseInt(searchParams.get('quantity') ?? '0', 10);
+            const offPrice = parseFloat(searchParams.get('price') ?? '0');
+            if (offServiceId && offQuantity && offPrice) {
+              setSelectedPackage({
+                id: packageId,
+                name: `Special Offer — ${offQuantity} units`,
+                price: offPrice,
+                quantity: offQuantity,
+                deliveryTime: 'Instant',
+                quality: 'Real Quality',
+                serviceCategory: svc.packages[0]?.serviceCategory ?? 'followers',
+                ssmServiceId: offServiceId,
+              } as PackageType);
+            }
+          } else {
+            // Normal package lookup
+            const pkg = svc.packages.find((p) => p.id === packageId);
+            if (pkg) setSelectedPackage(pkg);
+          }
         }
       }
     }
-  }, [serviceId, packageId]);
+  }, [serviceId, packageId, searchParams]);
 
   useEffect(() => {
     if (!orderData?.data) return;
@@ -86,53 +104,25 @@ function CheckoutContent() {
     return () => { sse.close(); sseRef.current = null; };
   }, [backendOrderId, phase]);
 
-  const validateLink = useCallback(
-    async (link: string) => {
-      if (!link.trim() || !selectedPackage?.serviceCategory) return;
-      setLinkError('');
-      setLinkValid(false);
-      try {
-        const result = await validateLinkMutation.mutateAsync({
-          link,
-          serviceCategory: selectedPackage.serviceCategory,
-        });
-        if (result.success) { setLinkValid(true); setLinkError(''); }
-        else { setLinkValid(false); setLinkError(result.message); }
-      } catch (err) {
-        setLinkError((err as Error).message || 'Link validation failed');
-        setLinkValid(false);
-      }
-    },
-    [selectedPackage, validateLinkMutation]
-  );
-
-  const handleLinkBlur = () => { if (profileLink.trim()) validateLink(profileLink); };
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setLinkError('');
 
-    if (!profileLink.trim()) { setLinkError('Please enter your profile/post/reel link'); return; }
-    if (!service || !selectedPackage) { setLinkError('Invalid service or package'); return; }
-
-    if (!linkValid && selectedPackage.serviceCategory) {
-      try {
-        const v = await validateLinkMutation.mutateAsync({ link: profileLink, serviceCategory: selectedPackage.serviceCategory });
-        if (!v.success) { setLinkError(v.message); return; }
-      } catch (err) { setLinkError((err as Error).message); return; }
-    }
+    if (!profileLink.trim()) { setOrderError('Please enter your profile/post/reel link'); return; }
+    if (!service || !selectedPackage) { setOrderError('Invalid service or package'); return; }
 
     try {
+      // Non-Instagram services always use 'followers' as serviceCategory
+      const isInstagram = serviceId === 'instagram';
       const result = await createOrderMutation.mutateAsync({
         serviceId: selectedPackage.ssmServiceId ?? 1,
         link: profileLink,
         quantity: selectedPackage.quantity,
         amount: selectedPackage.price,
-        serviceCategory: selectedPackage.serviceCategory ?? 'followers',
+        serviceCategory: isInstagram ? (selectedPackage.serviceCategory ?? 'followers') : 'followers',
       });
 
       if (result.success && result.data) {
-        const localOrder = createLocalOrder(service.id, service.name, selectedPackage.id, selectedPackage.quantityLabel, selectedPackage.quantity, selectedPackage.price, profileLink);
+        const localOrder = createLocalOrder(service.id, service.name, selectedPackage.id, selectedPackage.quantityLabel ?? `${selectedPackage.quantity}`, selectedPackage.quantity, selectedPackage.price, profileLink);
         if (typeof window !== 'undefined') {
           const orders = JSON.parse(localStorage.getItem('orders') || '[]');
           const idx = orders.findIndex((o: { orderId: string }) => o.orderId === localOrder.orderId);
@@ -143,10 +133,10 @@ function CheckoutContent() {
         }
         router.push(`/payment/status?orderId=${result.data.orderId}`);
       } else {
-        setLinkError(result.message || 'Failed to create order');
+        setOrderError(result.message || 'Failed to create order');
       }
     } catch (err) {
-      setLinkError((err as Error).message || 'Failed to create order.');
+      setOrderError((err as Error).message || 'Failed to create order.');
     }
   };
 
@@ -163,8 +153,8 @@ function CheckoutContent() {
     );
   }
 
-  const isLoading = createOrderMutation.isPending || validateLinkMutation.isPending;
-  const error = linkError || createOrderMutation.error?.message;
+  const isLoading = createOrderMutation.isPending;
+  const error = orderError || createOrderMutation.error?.message;
   const btnClass = service.accentColor;
   const textClass = service.accentText;
 
@@ -208,15 +198,9 @@ function CheckoutContent() {
                       type="url"
                       placeholder={selectedPackage.serviceCategory === 'followers' ? 'https://instagram.com/yourprofile' : 'https://instagram.com/p/abc123 or /reel/abc123'}
                       value={profileLink}
-                      onChange={(e) => { setProfileLink(e.target.value); setLinkValid(false); setLinkError(''); }}
-                      onBlur={handleLinkBlur}
-                      className={`w-full px-3 sm:px-4 py-2.5 sm:py-3 rounded-lg bg-gray-50 border text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 transition-all text-sm ${linkError ? 'border-red-400 focus:ring-red-200'
-                        : linkValid ? 'border-emerald-400 focus:ring-emerald-200'
-                          : 'border-gray-200 focus:ring-amber-200 focus:border-amber-400'
-                        }`}
+                      onChange={(e) => { setProfileLink(e.target.value); setOrderError(''); }}
+                      className="w-full px-3 sm:px-4 py-2.5 sm:py-3 rounded-lg bg-gray-50 border border-gray-200 text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-amber-200 focus:border-amber-400 transition-all text-sm"
                     />
-                    {validateLinkMutation.isPending && <div className="flex items-center gap-2 text-xs text-gray-500 mt-2"><Loader size={12} className="animate-spin" />Validating link...</div>}
-                    {linkValid && <div className="flex items-center gap-2 text-xs text-emerald-600 mt-2"><CheckCircle size={14} />Link validated</div>}
                     <div className="flex items-start gap-2 text-xs sm:text-sm text-gray-500 mt-3">
                       <CheckCircle size={16} className="text-emerald-500 mt-0.5 flex-shrink-0" />
                       <span>We never ask for your password or sensitive information</span>
@@ -330,7 +314,7 @@ function CheckoutContent() {
               </div>
               <h2 className="text-xl sm:text-2xl font-bold text-gray-800 mb-2">Payment Failed</h2>
               <p className="text-gray-500 text-sm sm:text-base mb-6">Your payment could not be processed. Please try again.</p>
-              <button onClick={() => { setPhase('form'); setPaymentUrl(null); setBackendOrderId(null); setLinkError(''); }}
+              <button onClick={() => { setPhase('form'); setPaymentUrl(null); setBackendOrderId(null); setOrderError(''); }}
                 className={`${btnClass} text-white font-bold py-3 px-8 rounded-lg transition-all duration-300`}>
                 Try Again
               </button>

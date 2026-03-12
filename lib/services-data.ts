@@ -391,7 +391,7 @@ export const services: Service[] = [
         deliveryTime: '1-3 days',
         quality: 'Mixed Quality',
         serviceCategory: 'followers',
-        ssmServiceId: 1,
+        ssmServiceId: 3822,
       },
       {
         id: 'ig-100f',
@@ -413,7 +413,7 @@ export const services: Service[] = [
         deliveryTime: '3-7 days',
         quality: 'Real Quality',
         serviceCategory: 'followers',
-        ssmServiceId: 2,
+        ssmServiceId: 3822,
       },
       {
         id: 'ig-2000f',
@@ -424,7 +424,7 @@ export const services: Service[] = [
         deliveryTime: '5-10 days',
         quality: 'Real Quality',
         serviceCategory: 'followers',
-        ssmServiceId: 2,
+        ssmServiceId: 3822,
       },
       {
         id: 'ig-5000f',
@@ -435,7 +435,7 @@ export const services: Service[] = [
         deliveryTime: '7-14 days',
         quality: 'Real Quality',
         serviceCategory: 'followers',
-        ssmServiceId: 2,
+        ssmServiceId: 3822,
       },
       {
         id: 'ig-10000f',
@@ -446,7 +446,7 @@ export const services: Service[] = [
         deliveryTime: '10-20 days',
         quality: 'Real Quality',
         serviceCategory: 'followers',
-        ssmServiceId: 2,
+        ssmServiceId: 3822,
       },
       {
         id: 'ig-15000f',
@@ -457,7 +457,7 @@ export const services: Service[] = [
         deliveryTime: '14-25 days',
         quality: 'Real Quality',
         serviceCategory: 'followers',
-        ssmServiceId: 2,
+        ssmServiceId: 3822,
       },
       {
         id: 'ig-25000f',
@@ -468,7 +468,7 @@ export const services: Service[] = [
         deliveryTime: '15-30 days',
         quality: 'Real Quality',
         serviceCategory: 'followers',
-        ssmServiceId: 2,
+        ssmServiceId: 3822,
       },
       {
         id: 'ig-50000f',
@@ -479,7 +479,7 @@ export const services: Service[] = [
         deliveryTime: '20-40 days',
         quality: 'Real Quality',
         serviceCategory: 'followers',
-        ssmServiceId: 2,
+        ssmServiceId: 3822,
       },
       {
         id: 'ig-100kf',
@@ -515,7 +515,7 @@ export const services: Service[] = [
         deliveryTime: '1-2 days',
         quality: 'Real Quality',
         serviceCategory: 'likes',
-        ssmServiceId: 3,
+        ssmServiceId: 3924,
       },
       {
         id: 'ig-2000l',
@@ -526,7 +526,7 @@ export const services: Service[] = [
         deliveryTime: '2-3 days',
         quality: 'Real Quality',
         serviceCategory: 'likes',
-        ssmServiceId: 3,
+        ssmServiceId: 3924,
       },
       {
         id: 'ig-5000l',
@@ -537,7 +537,7 @@ export const services: Service[] = [
         deliveryTime: '3-5 days',
         quality: 'Real Quality',
         serviceCategory: 'likes',
-        ssmServiceId: 3,
+        ssmServiceId: 3924,
       },
       {
         id: 'ig-10000l',
@@ -548,7 +548,7 @@ export const services: Service[] = [
         deliveryTime: '4-7 days',
         quality: 'Real Quality',
         serviceCategory: 'likes',
-        ssmServiceId: 3,
+        ssmServiceId: 3924,
       },
       {
         id: 'ig-20000l',
@@ -571,7 +571,7 @@ export const services: Service[] = [
         deliveryTime: '2-5 days',
         quality: 'Real Quality',
         serviceCategory: 'comments',
-        ssmServiceId: 4,
+        ssmServiceId: 670,
       },
       {
         id: 'ig-200c',
@@ -582,7 +582,7 @@ export const services: Service[] = [
         deliveryTime: '3-6 days',
         quality: 'Real Quality',
         serviceCategory: 'comments',
-        ssmServiceId: 4,
+        ssmServiceId: 670,
       },
       {
         id: 'ig-500c',
@@ -593,7 +593,7 @@ export const services: Service[] = [
         deliveryTime: '5-10 days',
         quality: 'Real Quality',
         serviceCategory: 'comments',
-        ssmServiceId: 4,
+        ssmServiceId: 670,
       },
       {
         id: 'ig-1000c',
@@ -616,7 +616,7 @@ export const services: Service[] = [
         deliveryTime: '1-2 days',
         quality: 'Mixed Quality',
         serviceCategory: 'views',
-        ssmServiceId: 5,
+        ssmServiceId: 602,
       },
       {
         id: 'ig-10000rv',
@@ -627,7 +627,7 @@ export const services: Service[] = [
         deliveryTime: '1-2 days',
         quality: 'Mixed Quality',
         serviceCategory: 'views',
-        ssmServiceId: 5,
+        ssmServiceId: 602,
       },
       {
         id: 'ig-25000rv',
@@ -638,7 +638,7 @@ export const services: Service[] = [
         deliveryTime: '2-3 days',
         quality: 'Mixed Quality',
         serviceCategory: 'views',
-        ssmServiceId: 5,
+        ssmServiceId: 602,
       },
       {
         id: 'ig-50000rv',
@@ -649,7 +649,7 @@ export const services: Service[] = [
         deliveryTime: '2-4 days',
         quality: 'Mixed Quality',
         serviceCategory: 'views',
-        ssmServiceId: 5,
+        ssmServiceId: 602,
       },
       {
         id: 'ig-100000rv',
@@ -660,7 +660,7 @@ export const services: Service[] = [
         deliveryTime: '3-5 days',
         quality: 'Mixed Quality',
         serviceCategory: 'views',
-        ssmServiceId: 5,
+        ssmServiceId: 602,
       },
       {
         id: 'ig-200000rv',
@@ -671,7 +671,7 @@ export const services: Service[] = [
         deliveryTime: '4-6 days',
         quality: 'Mixed Quality',
         serviceCategory: 'views',
-        ssmServiceId: 5,
+        ssmServiceId: 602,
       },
       {
         id: 'ig-300000rv',
@@ -682,7 +682,7 @@ export const services: Service[] = [
         deliveryTime: '5-7 days',
         quality: 'Mixed Quality',
         serviceCategory: 'views',
-        ssmServiceId: 5,
+        ssmServiceId: 602,
       },
       {
         id: 'ig-500000rv',
@@ -693,7 +693,7 @@ export const services: Service[] = [
         deliveryTime: '6-10 days',
         quality: 'Mixed Quality',
         serviceCategory: 'views',
-        ssmServiceId: 5,
+        ssmServiceId: 602,
       },
       {
         id: 'ig-1mrv',
