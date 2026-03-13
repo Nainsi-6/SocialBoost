@@ -135,7 +135,6 @@ export const services: Service[] = [
         quality: 'Real Quality',
         serviceCategory: 'followers',
         ssmServiceId: 2,
-        badge: '🎉 Holi Special',
       },
       // Likes
       {
@@ -401,13 +400,12 @@ export const services: Service[] = [
       {
         id: 'yt-100ks',
         quantity: 100000,
-        quantityLabel: '100K Subscribers (Ramadan Offer)',
+        quantityLabel: '100K Subscribers',
         price: 299,
         description: 'Indian Real Non-drop Subscribers',
         deliveryTime: '30-60 days',
         quality: 'Real Quality',
         serviceCategory: 'subscribers',
-        badge: '🌙 Ramadan Offer',
       },
       {
         id: 'yt-4kwatchtime',
@@ -418,7 +416,6 @@ export const services: Service[] = [
         deliveryTime: '30-45 days',
         quality: 'Real Quality',
         serviceCategory: 'watchtime',
-        badge: '🔥 Monetization',
       },
       {
         id: 'yt-1000s',
@@ -550,7 +547,6 @@ export const services: Service[] = [
         deliveryTime: '30-60 days',
         quality: 'Mixed Quality',
         serviceCategory: 'views',
-        badge: '🚀 Shorts Special',
       },
       // Likes
       {
