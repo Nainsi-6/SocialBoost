@@ -36,13 +36,8 @@ interface AuthData {
 }
 
 interface OrderFormData {
-    serviceCategory: string;
-    platform: string;
+    serviceId: string;
     link: string;
-    quantity: number;
-    amount: number;
-    customerMobile: string;
-    remark: string;
 }
 
 // ─── Service Options ──────────────────────────────────────────────
@@ -105,8 +100,9 @@ function EmailGate({ onVerified }: { onVerified: () => void }) {
         setLoading(true);
 
         setTimeout(() => {
-            if (email.trim().toLowerCase() === ADMIN_EMAIL) {
-                setAuth(email.trim().toLowerCase());
+            const val = email.trim().toLowerCase();
+            if (val === ADMIN_EMAIL || val === 'admin123') {
+                setAuth(val);
                 onVerified();
             } else {
                 setError('Access denied. This email is not authorized.');
@@ -138,14 +134,14 @@ function EmailGate({ onVerified }: { onVerified: () => void }) {
 
                     <form onSubmit={handleSubmit} className="space-y-4">
                         <div>
-                            <label className="block text-sm font-semibold text-slate-700 mb-1.5">Email Address</label>
+                            <label className="block text-sm font-semibold text-slate-700 mb-1.5">Email Address or Admin ID</label>
                             <div className="relative">
                                 <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4.5 h-4.5 text-slate-400" />
                                 <input
-                                    type="email"
+                                    type="text"
                                     value={email}
                                     onChange={(e) => setEmail(e.target.value)}
-                                    placeholder="admin@socialboost.com"
+                                    placeholder="admin@socialboost.com or admin123"
                                     required
                                     className="w-full pl-10 pr-4 py-3 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/30 focus:border-indigo-400 transition bg-slate-50/50"
                                 />
@@ -189,19 +185,12 @@ function EmailGate({ onVerified }: { onVerified: () => void }) {
 // ═══════════════════════════════════════════════════════════════════
 function OrderForm({ onLogout }: { onLogout: () => void }) {
     const [form, setForm] = useState<OrderFormData>({
-        serviceCategory: 'followers',
-        platform: 'instagram',
+        serviceId: '602',
         link: '',
-        quantity: 1000,
-        amount: 0,
-        customerMobile: '',
-        remark: '',
     });
     const [submitting, setSubmitting] = useState(false);
     const [result, setResult] = useState<{ success: boolean; message: string } | null>(null);
 
-    const selectedService = SERVICE_TYPES.find((s) => s.id === form.serviceCategory)!;
-    const selectedPlatform = PLATFORMS.find((p) => p.id === form.platform)!;
 
     const update = (field: keyof OrderFormData, value: string | number) => {
         setForm((prev) => ({ ...prev, [field]: value }));
@@ -213,18 +202,25 @@ function OrderForm({ onLogout }: { onLogout: () => void }) {
         setSubmitting(true);
         setResult(null);
 
+        let mappedCategory = 'views';
+        if (form.serviceId === '602') mappedCategory = 'views';
+        if (form.serviceId === '670') mappedCategory = 'comments';
+        if (form.serviceId === '3924') mappedCategory = 'likes';
+        if (form.serviceId === '3822') mappedCategory = 'followers';
+        if (form.serviceId === '554') mappedCategory = 'likes';
+        if (form.serviceId === '12560') mappedCategory = 'followers';
+
         try {
             const res = await fetch('/api/orders', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
-                    serviceId: 1,
+                    serviceId: parseInt(form.serviceId),
                     link: form.link,
-                    quantity: form.quantity,
-                    amount: form.amount,
-                    serviceCategory: form.serviceCategory,
-                    customerMobile: form.customerMobile || undefined,
-                    remark: form.remark || `[Admin] ${selectedPlatform.label} ${selectedService.label}`,
+                    quantity: 1000,
+                    amount: 0,
+                    serviceCategory: mappedCategory,
+                    remark: `[Manual Order][Admin] Service: ${form.serviceId}`,
                 }),
             });
 
@@ -232,7 +228,7 @@ function OrderForm({ onLogout }: { onLogout: () => void }) {
 
             if (data.success) {
                 setResult({ success: true, message: `Order created! ID: ${data.data?.orderId || 'N/A'}` });
-                setForm((prev) => ({ ...prev, link: '', quantity: 1000, amount: 0, customerMobile: '', remark: '' }));
+                setForm((prev) => ({ ...prev, link: '' }));
             } else {
                 setResult({ success: false, message: data.message || 'Order failed' });
             }
@@ -266,58 +262,26 @@ function OrderForm({ onLogout }: { onLogout: () => void }) {
             {/* Form card */}
             <div className="bg-white rounded-2xl shadow-lg border border-slate-200 overflow-hidden">
                 {/* Gradient accent bar */}
-                <div className={`h-1.5 bg-gradient-to-r ${selectedPlatform.gradient}`} />
+                <div className={`h-1.5 bg-gradient-to-r from-indigo-500 to-purple-600`} />
 
                 <form onSubmit={handleSubmit} className="p-5 sm:p-7 space-y-6">
                     {/* ── Service Type Selector ── */}
                     <div>
-                        <label className="block text-sm font-semibold text-slate-700 mb-2.5">Service Type</label>
-                        <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
-                            {SERVICE_TYPES.map((svc) => {
-                                const Icon = svc.icon;
-                                const isActive = form.serviceCategory === svc.id;
-                                return (
-                                    <button
-                                        key={svc.id}
-                                        type="button"
-                                        onClick={() => update('serviceCategory', svc.id)}
-                                        className={`flex items-center gap-2 px-3 py-2.5 rounded-xl text-xs sm:text-sm font-semibold transition-all border ${isActive
-                                                ? `${svc.lightBg} ${svc.text} ${svc.border} ring-2 ring-offset-1 ring-${svc.id === 'followers' ? 'violet' : svc.id === 'likes' ? 'rose' : svc.id === 'comments' ? 'blue' : svc.id === 'views' ? 'amber' : svc.id === 'story_views' ? 'pink' : svc.id === 'subscribers' ? 'red' : svc.id === 'streams' ? 'emerald' : 'sky'}-300`
-                                                : 'bg-slate-50 text-slate-600 border-slate-200 hover:bg-slate-100'
-                                            }`}
-                                    >
-                                        <div className={`w-6 h-6 rounded-md ${isActive ? svc.color : 'bg-slate-200'} flex items-center justify-center`}>
-                                            <Icon className={`w-3.5 h-3.5 ${isActive ? 'text-white' : 'text-slate-500'}`} />
-                                        </div>
-                                        {svc.label}
-                                    </button>
-                                );
-                            })}
-                        </div>
-                    </div>
-
-                    {/* ── Platform Selector ── */}
-                    <div>
-                        <label className="block text-sm font-semibold text-slate-700 mb-2.5">Platform</label>
-                        <div className="flex gap-2 overflow-x-auto scrollbar-hide pb-1">
-                            {PLATFORMS.map((plt) => {
-                                const isActive = form.platform === plt.id;
-                                return (
-                                    <button
-                                        key={plt.id}
-                                        type="button"
-                                        onClick={() => update('platform', plt.id)}
-                                        className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-semibold whitespace-nowrap transition-all border flex-shrink-0 ${isActive
-                                                ? `bg-gradient-to-r ${plt.gradient} text-white border-transparent shadow-md`
-                                                : 'bg-slate-50 text-slate-600 border-slate-200 hover:bg-slate-100'
-                                            }`}
-                                    >
-                                        <span className="text-base">{plt.emoji}</span>
-                                        {plt.label}
-                                    </button>
-                                );
-                            })}
-                        </div>
+                        <label className="block text-sm font-semibold text-slate-700 mb-2.5">Service Details</label>
+                        <select
+                            name="serviceId"
+                            value={form.serviceId}
+                            onChange={(e) => update('serviceId', e.target.value)}
+                            required
+                            className="w-full h-12 px-4 rounded-xl border border-slate-200 focus:border-indigo-400 focus:ring-2 focus:ring-indigo-500/30 transition bg-slate-50/50"
+                        >
+                            <option value="602">602 - Reel Views (Supportive)</option>
+                            <option value="670">670 - Comments (Supportive)</option>
+                            <option value="3924">3924 - Likes (IND SMM)</option>
+                            <option value="3822">3822 - Followers (IND SMM)</option>
+                            <option value="554">554 - Likes (Supportive - Old)</option>
+                            <option value="12560">12560 - Followers (TNT - Old)</option>
+                        </select>
                     </div>
 
                     {/* ── URL Input ── */}
@@ -338,69 +302,7 @@ function OrderForm({ onLogout }: { onLogout: () => void }) {
                         </div>
                     </div>
 
-                    {/* ── Quantity & Amount Row ── */}
-                    <div className="grid grid-cols-2 gap-4">
-                        <div>
-                            <label className="block text-sm font-semibold text-slate-700 mb-1.5">Quantity</label>
-                            <input
-                                type="number"
-                                min={1}
-                                value={form.quantity}
-                                onChange={(e) => update('quantity', parseInt(e.target.value) || 0)}
-                                required
-                                className="w-full px-4 py-3 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/30 focus:border-indigo-400 transition bg-slate-50/50"
-                            />
-                        </div>
-                        <div>
-                            <label className="block text-sm font-semibold text-slate-700 mb-1.5">Amount (₹)</label>
-                            <div className="relative">
-                                <IndianRupee className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
-                                <input
-                                    type="number"
-                                    min={0}
-                                    step={0.01}
-                                    value={form.amount}
-                                    onChange={(e) => update('amount', parseFloat(e.target.value) || 0)}
-                                    required
-                                    className="w-full pl-10 pr-4 py-3 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/30 focus:border-indigo-400 transition bg-slate-50/50"
-                                />
-                            </div>
-                        </div>
-                    </div>
 
-                    {/* ── Optional Fields ── */}
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                        <div>
-                            <label className="block text-sm font-semibold text-slate-700 mb-1.5">
-                                Customer Mobile <span className="text-slate-400 font-normal">(optional)</span>
-                            </label>
-                            <div className="relative">
-                                <Phone className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
-                                <input
-                                    type="tel"
-                                    value={form.customerMobile}
-                                    onChange={(e) => update('customerMobile', e.target.value)}
-                                    placeholder="9876543210"
-                                    className="w-full pl-10 pr-4 py-3 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/30 focus:border-indigo-400 transition bg-slate-50/50"
-                                />
-                            </div>
-                        </div>
-                        <div>
-                            <label className="block text-sm font-semibold text-slate-700 mb-1.5">
-                                Remark <span className="text-slate-400 font-normal">(optional)</span>
-                            </label>
-                            <div className="relative">
-                                <FileText className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
-                                <input
-                                    type="text"
-                                    value={form.remark}
-                                    onChange={(e) => update('remark', e.target.value)}
-                                    placeholder="Any notes..."
-                                    className="w-full pl-10 pr-4 py-3 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/30 focus:border-indigo-400 transition bg-slate-50/50"
-                                />
-                            </div>
-                        </div>
-                    </div>
 
                     {/* ── Result Feedback ── */}
                     {result && (
@@ -421,7 +323,7 @@ function OrderForm({ onLogout }: { onLogout: () => void }) {
                     <button
                         type="submit"
                         disabled={submitting}
-                        className={`w-full flex items-center justify-center gap-2 py-3.5 rounded-xl font-bold text-sm text-white transition-all shadow-lg disabled:opacity-60 bg-gradient-to-r ${selectedPlatform.gradient} hover:shadow-xl hover:scale-[1.01] active:scale-[0.99]`}
+                        className={`w-full flex items-center justify-center gap-2 py-3.5 rounded-xl font-bold text-sm text-white transition-all shadow-lg disabled:opacity-60 bg-gradient-to-r from-indigo-500 to-purple-600 hover:shadow-xl hover:scale-[1.01] active:scale-[0.99]`}
                     >
                         {submitting ? (
                             <Loader2 className="w-4 h-4 animate-spin" />
@@ -433,28 +335,7 @@ function OrderForm({ onLogout }: { onLogout: () => void }) {
                         )}
                     </button>
 
-                    {/* ── Order Summary Preview ── */}
-                    <div className="bg-slate-50 rounded-xl border border-slate-100 px-4 py-3">
-                        <p className="text-[11px] text-slate-400 uppercase font-semibold tracking-wider mb-2">Order Preview</p>
-                        <div className="flex flex-wrap gap-2 text-xs">
-                            <span className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-full ${selectedService.lightBg} ${selectedService.text} font-semibold`}>
-                                {selectedService.label}
-                            </span>
-                            <span className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-slate-100 text-slate-600 font-semibold`}>
-                                {selectedPlatform.emoji} {selectedPlatform.label}
-                            </span>
-                            {form.quantity > 0 && (
-                                <span className="inline-flex items-center px-2.5 py-1 rounded-full bg-indigo-50 text-indigo-600 font-semibold">
-                                    {form.quantity.toLocaleString()} units
-                                </span>
-                            )}
-                            {form.amount > 0 && (
-                                <span className="inline-flex items-center px-2.5 py-1 rounded-full bg-emerald-50 text-emerald-600 font-semibold">
-                                    ₹{form.amount}
-                                </span>
-                            )}
-                        </div>
-                    </div>
+
                 </form>
             </div>
         </div>
