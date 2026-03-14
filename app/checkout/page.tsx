@@ -5,6 +5,7 @@ import { useState, Suspense, useEffect, useRef } from 'react';
 import { getServiceBySlug } from '@/lib/services-data';
 import { createOrder as createLocalOrder } from '@/lib/order-manager';
 import { Service, Package as PackageType } from '@/lib/types';
+import { YouTubeVideo } from '@/components/YouTubeVideo';
 import { useCreateOrder, useOrder } from '@/hooks/use-orders';
 import {
   CheckCircle,
@@ -193,6 +194,13 @@ function CheckoutContent() {
                     </div>
                   </div>
 
+                  {/* ===== HOW TO BUY VIDEO (Form Phase) ===== */}
+                  <YouTubeVideo
+                    url="https://youtube.com/shorts/eod8fg_vcgc?si=-lWRqV0jSFS7fHrQ"
+                    heading="Quick Video Guide"
+                    className="w-full"
+                  />
+
                   <div className="bg-white border border-gray-200 rounded-lg p-4 sm:p-6 shadow-sm">
                     <h2 className="text-base sm:text-lg font-semibold text-gray-800 mb-3 sm:mb-4">Enter Your Link</h2>
                     <label className="block text-xs sm:text-sm text-gray-600 mb-2">
@@ -273,6 +281,15 @@ function CheckoutContent() {
                 <div><p className="text-gray-400 text-xs mb-1">Order ID</p><code className={`${textClass} text-xs bg-gray-50 px-2 py-0.5 rounded font-mono`}>{backendOrderId?.substring(0, 12)}...</code></div>
               </div>
             </div>
+
+            {/* ===== HOW TO BUY VIDEO (Payment Phase) ===== */}
+            <div className="mt-4">
+              <YouTubeVideo
+                url="https://youtube.com/shorts/eod8fg_vcgc?si=-lWRqV0jSFS7fHrQ"
+                heading="Quick Video Guide"
+                className="w-full"
+              />
+            </div>
           </div>
         )}
 
@@ -332,7 +349,6 @@ function CheckoutContent() {
             </div>
           </div>
         )}
-
       </div>
     </div>
   );
