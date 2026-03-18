@@ -5,11 +5,14 @@ import { getAllServices } from '@/lib/services-data';
 import ServiceCard from '@/components/ServiceCard';
 import Banner from '@/components/Banner';
 import Sidebar from '@/components/Sidebar';
+import { YouTubeModal } from '@/components/YouTubeModal';
 import { YouTubeVideo } from '@/components/YouTubeVideo';
-import { Zap, ShieldCheck, BadgeCheck, Headphones } from "lucide-react";
+import { Zap, ShieldCheck, BadgeCheck, Headphones, Youtube } from "lucide-react";
+
 export default function Home() {
   const services = getAllServices();
   const [isOpen, setIsOpen] = useState(false);
+  const [isVideoModalOpen, setIsVideoModalOpen] = useState(false);
 
   return (
     <div className="min-h-screen bg-slate-50 text-gray-900">
@@ -23,18 +26,21 @@ export default function Home() {
       {/* ===== QUICK ACTION STRIPS ===== */}
       <div className="mt-3 px-4 sm:px-6 flex flex-col sm:flex-row gap-2 sm:gap-3">
         <div className="flex-1 bg-emerald-500/10 border border-emerald-200 rounded-xl py-2.5 px-4 flex items-center justify-center gap-2 text-xs sm:text-sm text-emerald-700 font-semibold hover:bg-emerald-100 transition cursor-pointer">
-          <span>💬</span>
+          <span className="text-emerald-500">💬</span>
           <span>24x7 Customer Support</span>
           <span className="ml-auto text-emerald-500">→</span>
         </div>
+
+        <div
+          onClick={() => setIsVideoModalOpen(true)}
+          className="flex-1 bg-red-500/10 border border-red-200 rounded-xl py-2.5 px-4 flex items-center justify-center gap-2 text-xs sm:text-sm text-red-700 font-semibold hover:bg-red-100 transition cursor-pointer"
+        >
+          <Youtube className="w-4 h-4 text-red-500" />
+          <span>Quick Video Guide: How to Pay</span>
+          <span className="ml-auto text-red-500">→</span>
+        </div>
       </div>
 
-      {/* ===== HOW TO BUY VIDEO ===== */}
-      <YouTubeVideo
-        url="https://youtube.com/shorts/eod8fg_vcgc?si=-lWRqV0jSFS7fHrQ"
-        heading="How To Buy - Video Guide"
-        className="mt-8 mb-4"
-      />
 
       {/* ===== STATS STRIP ===== */}
       <div className="mt-5 mx-4 sm:mx-6 bg-white border border-slate-200 rounded-2xl shadow-sm px-4 sm:px-8 py-4 grid grid-cols-3 divide-x divide-slate-100">
@@ -159,6 +165,12 @@ export default function Home() {
         </div>
       </footer>
 
+      <YouTubeModal
+        url="https://youtube.com/shorts/eod8fg_vcgc?si=-lWRqV0jSFS7fHrQ"
+        isOpen={isVideoModalOpen}
+        onOpenChange={setIsVideoModalOpen}
+        title="How to Pay & Use SocialBoost"
+      />
     </div>
   );
 }

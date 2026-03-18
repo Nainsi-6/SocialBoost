@@ -36,8 +36,8 @@ function PaymentStatusContent() {
         if (!orderId || typeof window === 'undefined') return;
 
         const stored = sessionStorage.getItem(timerKey);
-        if (!stored) {
-            sessionStorage.setItem(timerKey, String(Date.now()));
+        if (!stored && orderData?.data?.createdAt) {
+            sessionStorage.setItem(timerKey, String(new Date(orderData.data.createdAt).getTime()));
         }
     }, [orderId, timerKey]);
 
