@@ -12,6 +12,10 @@ interface YouTubeVideoProps {
   heading?: string
   /** Additional CSS classes for the container */
   className?: string
+  /** Whether the video should play automatically */
+  autoplay?: boolean
+  /** Whether to show only the video player without any outer decorations or margins */
+  minimal?: boolean
 }
 
 /**
@@ -23,6 +27,8 @@ export const YouTubeVideo: React.FC<YouTubeVideoProps> = ({
   iframeCode,
   heading,
   className,
+  autoplay = false,
+  minimal = false,
 }) => {
   // Logic to extract video ID and create embed URL if url is provided
   const getEmbedUrl = (videoUrl: string) => {
@@ -44,7 +50,14 @@ export const YouTubeVideo: React.FC<YouTubeVideoProps> = ({
         videoId = urlObj.pathname.slice(1)
       }
       
-      return videoId ? `https://www.youtube.com/embed/${videoId}` : videoUrl
+      if (videoId) {
+        let embedUrl = `https://www.youtube.com/embed/${videoId}`
+        if (autoplay) {
+          embedUrl += `?autoplay=1&mute=1` // Mute is required for many browsers to allow autoplay
+        }
+        return embedUrl
+      }
+      return videoUrl
     } catch {
       // If it's just a video ID, return the embed URL
       if (videoUrl.length === 11 && !videoUrl.includes('/')) {
@@ -90,6 +103,14 @@ export const YouTubeVideo: React.FC<YouTubeVideoProps> = ({
     return (
       <div className="absolute inset-0 flex items-center justify-center bg-gray-100 text-gray-400">
         <p>No video source provided</p>
+      </div>
+    )
+  }
+
+  if (minimal) {
+    return (
+      <div className={cn("relative w-full pt-[56.25%] bg-black overflow-hidden shadow-inner", className)}>
+        {renderVideoContent()}
       </div>
     )
   }

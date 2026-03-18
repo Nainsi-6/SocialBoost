@@ -2,7 +2,7 @@
 'use client';
 
 import Link from 'next/link';
-import { Service } from '@/admin_frontend/lib/types';
+import { Service } from '@/lib/types';
 import { ArrowRight } from 'lucide-react';
 import {
   FaInstagram,
