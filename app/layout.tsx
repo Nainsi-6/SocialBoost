@@ -13,7 +13,7 @@ export const metadata: Metadata = {
     'Grow your social media presence with real followers, likes, comments, and views. Fast delivery, best prices, 100% safe.',
 }
 
-export default function RootsLayout({
+export default function RootLayout({
   children,
 }: {
   children: React.ReactNode
