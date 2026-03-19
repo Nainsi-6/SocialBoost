@@ -113,6 +113,7 @@ function CheckoutContent() {
       const isInstagram = serviceId === 'instagram';
       const result = await createOrderMutation.mutateAsync({
         serviceId: selectedPackage.ssmServiceId ?? 1,
+        serviceName: service.name,
         link: profileLink,
         quantity: selectedPackage.quantity,
         amount: selectedPackage.price,

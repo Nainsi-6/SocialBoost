@@ -6,6 +6,7 @@ import { useMutation, useQuery } from '@tanstack/react-query';
 
 export interface CreateOrderPayload {
     serviceId: number;
+    serviceName?: string;
     link: string;
     quantity: number;
     amount: number;
@@ -29,6 +30,7 @@ export interface ApiResponse<T = unknown> {
 export interface CreateOrderData {
     orderId: string;
     serviceId: number;
+    serviceName: string | null;
     link: string;
     quantity: number;
     amount: number;
