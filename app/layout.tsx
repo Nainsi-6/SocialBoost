@@ -8,12 +8,12 @@ import './globals.css'
 const geist = Geist({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
-  title: 'SocialBoost — #1 Social Media Growth Service',
+  title: 'Fastxera — #1 Social Media Growth Service',
   description:
     'Grow your social media presence with real followers, likes, comments, and views. Fast delivery, best prices, 100% safe.',
 }
 
-export default function RootLayout({
+export default function RootsLayout({
   children,
 }: {
   children: React.ReactNode
