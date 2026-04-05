@@ -9,7 +9,7 @@ export default function AboutPage() {
         {/* Header */}
         <div className="mb-12 text-center">
           <h1 className="text-4xl lg:text-5xl font-bold text-white mb-4">
-            About SocialBoost
+            About Fastxera
           </h1>
           <p className="text-xl text-slate-400">
             Empowering creators and businesses to grow their social media presence
@@ -20,7 +20,7 @@ export default function AboutPage() {
         <div className="bg-slate-900/50 border border-slate-700 rounded-lg p-8 mb-12">
           <h2 className="text-2xl font-bold text-white mb-6">Our Mission</h2>
           <p className="text-slate-300 text-lg leading-relaxed">
-            At SocialBoost, our mission is simple: help creators, entrepreneurs, and
+            At Fastxera, our mission is simple: help creators, entrepreneurs, and
             businesses achieve their social media goals. We believe that everyone
             deserves the opportunity to grow their online presence and reach their
             audience. We provide affordable, safe, and effective solutions to boost
@@ -114,7 +114,7 @@ export default function AboutPage() {
 
         {/* Why Choose Us */}
         <div className="bg-gradient-to-r from-blue-900/30 to-slate-900/30 border border-blue-500/30 rounded-lg p-8 mb-12">
-          <h2 className="text-2xl font-bold text-white mb-6">Why Choose SocialBoost?</h2>
+          <h2 className="text-2xl font-bold text-white mb-6">Why Choose Fastxera?</h2>
           <div className="space-y-4">
             {[
               'Real, high-quality followers and engagement',
@@ -142,7 +142,7 @@ export default function AboutPage() {
               {
                 year: '2022',
                 title: 'Founded',
-                description: 'SocialBoost was founded with a vision to democratize social media growth',
+                description: 'Fastxera was founded with a vision to democratize social media growth',
               },
               {
                 year: '2023',

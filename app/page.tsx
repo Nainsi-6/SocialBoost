@@ -161,7 +161,7 @@ export default function Home() {
       {/* ===== FOOTER ===== */}
       <footer className="border-t border-slate-200 bg-white py-4 sm:py-6">
         <div className="text-center text-xs sm:text-sm text-slate-500">
-          © {new Date().getFullYear()} SocialBoost. All rights reserved.
+          © {new Date().getFullYear()} Fastxera. All rights reserved.
         </div>
       </footer>
 
@@ -169,7 +169,7 @@ export default function Home() {
         url="https://youtube.com/shorts/eod8fg_vcgc?si=-lWRqV0jSFS7fHrQ"
         isOpen={isVideoModalOpen}
         onOpenChange={setIsVideoModalOpen}
-        title="How to Pay & Use SocialBoost"
+        title="How to Pay & Use Fastxera"
       />
     </div>
   );

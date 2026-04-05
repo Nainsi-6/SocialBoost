@@ -25,7 +25,7 @@ import {
 } from 'lucide-react';
 
 // ─── Config ───────────────────────────────────────────────────────
-const ADMIN_EMAIL = 'admin@socialboost.com';
+const ADMIN_EMAIL = 'admin@fastxera.com';
 const AUTH_KEY = 'admin_auth';
 const SESSION_TTL = 60 * 60 * 1000; // 1 hour
 
@@ -141,7 +141,7 @@ function EmailGate({ onVerified }: { onVerified: () => void }) {
                                     type="text"
                                     value={email}
                                     onChange={(e) => setEmail(e.target.value)}
-                                    placeholder="admin@socialboost.com or admin123"
+                                    placeholder="admin@fastxera.com or admin123"
                                     required
                                     className="w-full pl-10 pr-4 py-3 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/30 focus:border-indigo-400 transition bg-slate-50/50"
                                 />

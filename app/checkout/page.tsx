@@ -108,7 +108,7 @@ function CheckoutContent() {
 
 
     if (!service || !selectedPackage) { setOrderError('Invalid service or package'); return; }
-
+    if (profileLink.trim() === '') { setOrderError('Link is required to proceed'); return; }
     try {
       const isInstagram = serviceId === 'instagram';
       const result = await createOrderMutation.mutateAsync({
@@ -163,8 +163,8 @@ function CheckoutContent() {
     const cat = selectedPackage.serviceCategory;
 
     if (slug === 'netflix' || slug === 'amazon-prime' || slug === 'spotify') {
-      return { 
-        label: `${service.name} Account Email`, 
+      return {
+        label: `${service.name} Account Email`,
         placeholder: 'Enter your account email (e.g., user@example.com)',
         showVideo: false
       };
@@ -172,17 +172,17 @@ function CheckoutContent() {
 
     if (slug === 'youtube') {
       const isSubs = cat === 'subscribers';
-      return { 
-        label: isSubs ? 'YouTube Channel URL' : 'YouTube Video URL', 
-        placeholder: isSubs ? 'https://youtube.com/channel/yourchannel' : 'https://youtube.com/watch?v=abc123' ,
+      return {
+        label: isSubs ? 'YouTube Channel URL' : 'YouTube Video URL',
+        placeholder: isSubs ? 'https://youtube.com/channel/yourchannel' : 'https://youtube.com/watch?v=abc123',
         showVideo: false
       };
     }
 
     if (slug === 'facebook') {
       const isFollowers = cat === 'followers';
-      return { 
-        label: isFollowers ? 'Facebook Profile / Page URL' : 'Facebook Post URL', 
+      return {
+        label: isFollowers ? 'Facebook Profile / Page URL' : 'Facebook Post URL',
         placeholder: isFollowers ? 'https://facebook.com/yourprofile' : 'https://facebook.com/posts/123',
         showVideo: false
       };
@@ -190,8 +190,8 @@ function CheckoutContent() {
 
     if (slug === 'telegram') {
       const isGroup = cat === 'members' || cat === 'subscribers';
-      return { 
-        label: isGroup ? 'Telegram Group / Channel Link' : 'Telegram Post Link', 
+      return {
+        label: isGroup ? 'Telegram Group / Channel Link' : 'Telegram Post Link',
         placeholder: isGroup ? 'https://t.me/yourgroup' : 'https://t.me/yourgroup/123',
         showVideo: false
       };
@@ -199,8 +199,8 @@ function CheckoutContent() {
 
     // Default / Instagram Fallback
     const isFollowers = cat === 'followers';
-    return { 
-      label: isFollowers ? `${service.name} Profile URL` : `${service.name} Post / Reel URL`, 
+    return {
+      label: isFollowers ? `${service.name} Profile URL` : `${service.name} Post / Reel URL`,
       placeholder: isFollowers ? `https://${slug}.com/yourprofile` : `https://${slug}.com/p/abc123 or /reel/abc123`,
       showVideo: slug === 'instagram'
     };
