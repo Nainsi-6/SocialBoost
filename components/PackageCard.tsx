@@ -72,7 +72,7 @@ export default function PackageCard({
         </div>
 
         <Link
-          href={`/checkout?service=${serviceId}&package=${pkg.id}&serviceName=${encodeURIComponent(serviceName)}`}
+          href={`/checkout?service=${serviceId}&package=${pkg.id}&serviceName=${encodeURIComponent(serviceName)}&serviceId=${pkg.ssmServiceId}`}
           className={`
             ${accentColor} text-white text-[11px] sm:text-xs font-bold
             px-3 py-1.5 sm:px-4 sm:py-2 rounded-lg transition-all active:scale-95

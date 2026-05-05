@@ -66,7 +66,15 @@ function CheckoutContent() {
             }
           } else {
             const pkg = svc.packages.find((p) => p.id === packageId);
-            if (pkg) setSelectedPackage(pkg);
+            if (pkg) {
+              const urlServiceId = parseInt(searchParams.get('serviceId') ?? '0', 10);
+              // Use URL ID if pkg has no ID yet or if we want to ensure URL ID priority
+              if (urlServiceId && !pkg.ssmServiceId) {
+                setSelectedPackage({ ...pkg, ssmServiceId: urlServiceId });
+              } else {
+                setSelectedPackage(pkg);
+              }
+            }
           }
         }
       }
