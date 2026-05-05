@@ -40,6 +40,14 @@ interface OrderFormData {
     link: string;
 }
 
+interface ServiceIdEntry {
+    id: number;
+    name: string;
+    provider: string;
+    category: string;
+    platform: string;
+}
+
 // ─── Service Options ──────────────────────────────────────────────
 const SERVICE_TYPES = [
     { id: 'followers', label: 'Followers', icon: Users, color: 'bg-violet-500', lightBg: 'bg-violet-50', text: 'text-violet-600', border: 'border-violet-200' },
@@ -185,11 +193,33 @@ function EmailGate({ onVerified }: { onVerified: () => void }) {
 // ═══════════════════════════════════════════════════════════════════
 function OrderForm({ onLogout }: { onLogout: () => void }) {
     const [form, setForm] = useState<OrderFormData>({
-        serviceId: '602',
+        serviceId: '',
         link: '',
     });
     const [submitting, setSubmitting] = useState(false);
     const [result, setResult] = useState<{ success: boolean; message: string } | null>(null);
+    const [serviceIds, setServiceIds] = useState<ServiceIdEntry[]>([]);
+    const [loadingIds, setLoadingIds] = useState(true);
+
+    useEffect(() => {
+        const fetchIds = async () => {
+            try {
+                const res = await fetch('/api/service-ids');
+                const data = await res.json();
+                if (data.success && Array.isArray(data.data)) {
+                    setServiceIds(data.data);
+                    if (data.data.length > 0) {
+                        setForm(prev => ({ ...prev, serviceId: String(data.data[0].id) }));
+                    }
+                }
+            } catch (err) {
+                console.error('Failed to fetch service IDs:', err);
+            } finally {
+                setLoadingIds(false);
+            }
+        };
+        fetchIds();
+    }, []);
 
 
     const update = (field: keyof OrderFormData, value: string | number) => {
@@ -202,11 +232,8 @@ function OrderForm({ onLogout }: { onLogout: () => void }) {
         setSubmitting(true);
         setResult(null);
 
-        let mappedCategory = 'views';
-        if (form.serviceId === '602') mappedCategory = 'views';
-        if (form.serviceId === '670') mappedCategory = 'comments';
-        if (form.serviceId === '12587') mappedCategory = 'likes';
-        if (form.serviceId === '10183') mappedCategory = 'followers';
+        const selectedService = serviceIds.find(s => String(s.id) === form.serviceId);
+        const mappedCategory = selectedService?.category || 'views';
 
         try {
             const res = await fetch('/api/orders', {
@@ -271,12 +298,20 @@ function OrderForm({ onLogout }: { onLogout: () => void }) {
                             value={form.serviceId}
                             onChange={(e) => update('serviceId', e.target.value)}
                             required
-                            className="w-full h-12 px-4 rounded-xl border border-slate-200 focus:border-indigo-400 focus:ring-2 focus:ring-indigo-500/30 transition bg-slate-50/50"
+                            disabled={loadingIds}
+                            className="w-full h-12 px-4 rounded-xl border border-slate-200 focus:border-indigo-400 focus:ring-2 focus:ring-indigo-500/30 transition bg-slate-50/50 disabled:opacity-50"
                         >
-                            <option value="602">602 - Reel Views (Supportive)</option>
-                            <option value="670">670 - Comments (Supportive)</option>
-                            <option value="12587">12587 - Likes (TNT SMM)</option>
-                            <option value="10183">10183 - Followers (TNT SMM)</option>
+                            {loadingIds ? (
+                                <option>Loading services...</option>
+                            ) : serviceIds.length > 0 ? (
+                                serviceIds.map(s => (
+                                    <option key={s.id} value={s.id}>
+                                        {s.id} - {s.name} ({s.platform} | {s.provider})
+                                    </option>
+                                ))
+                            ) : (
+                                <option>No services found</option>
+                            )}
                         </select>
                     </div>
 

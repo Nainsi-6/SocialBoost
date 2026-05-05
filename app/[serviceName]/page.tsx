@@ -1,4 +1,5 @@
-import { getServiceBySlug, getAllServices } from '@/lib/services-data';
+import { getServicesWithDynamicIds } from '@/lib/services-data';
+import { fetchServiceIdMap } from '@/lib/fetch-service-ids';
 import ServicePageClient from './ServicePageClient';
 import { Metadata } from 'next';
 import Schema from '@/components/Schema';
@@ -9,6 +10,8 @@ interface Props {
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const serviceName = (await params).serviceName;
+  // Use static services for metadata (IDs don't matter for SEO)
+  const { getServiceBySlug } = await import('@/lib/services-data');
   const service = getServiceBySlug(serviceName);
   if (service == undefined) {
     return {
@@ -42,8 +45,14 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function ServicePage({ params }: Props) {
   const serviceName = (await params).serviceName;
-  const service = getServiceBySlug(serviceName);
-  const allServices = getAllServices();
+
+  // Fetch the live service ID map from the backend (60s revalidation cache)
+  // and bake the correct ssmServiceId values into every package at render time.
+  const serviceIdMap = await fetchServiceIdMap();
+  const liveServices = getServicesWithDynamicIds(serviceIdMap);
+
+  const service = liveServices.find((s) => s.slug === serviceName);
+  const allServices = liveServices;
   const otherServices = allServices.filter((s) => s.slug !== serviceName);
 
   if (!service) {

@@ -2,7 +2,8 @@
 
 import { useSearchParams, useRouter } from 'next/navigation';
 import { useState, Suspense, useEffect, useRef } from 'react';
-import { getServiceBySlug } from '@/lib/services-data';
+import { getServiceBySlug, getServicesWithDynamicIds } from '@/lib/services-data';
+import { useServiceIds } from '@/hooks/use-service-ids';
 import { createOrder as createLocalOrder } from '@/lib/order-manager';
 import { Service, Package as PackageType } from '@/lib/types';
 import { YouTubeVideo } from '@/components/YouTubeVideo';
@@ -35,12 +36,15 @@ function CheckoutContent() {
   const [service, setService] = useState<Service | null>(null);
   const [selectedPackage, setSelectedPackage] = useState<PackageType | null>(null);
 
+  const { serviceIdMap, isLoading: idsLoading } = useServiceIds();
   const createOrderMutation = useCreateOrder();
   const { data: orderData } = useOrder(backendOrderId, phase === 'payment' || phase === 'processing');
 
   useEffect(() => {
-    if (serviceId) {
-      const svc = getServiceBySlug(serviceId);
+    if (serviceId && !idsLoading) {
+      const liveServices = getServicesWithDynamicIds(serviceIdMap);
+      const svc = liveServices.find((s) => s.slug === serviceId);
+      
       if (svc) {
         setService(svc);
         if (packageId) {
@@ -67,7 +71,7 @@ function CheckoutContent() {
         }
       }
     }
-  }, [serviceId, packageId, searchParams]);
+  }, [serviceId, packageId, searchParams, serviceIdMap, idsLoading]);
 
   useEffect(() => {
     if (!orderData?.data) return;
@@ -138,6 +142,15 @@ function CheckoutContent() {
       setOrderError((err as Error).message || 'Failed to create order.');
     }
   };
+
+  if (idsLoading) {
+    return (
+      <div className="min-h-screen flex flex-col items-center justify-center bg-slate-50">
+        <Loader size={48} className="animate-spin text-indigo-600 mb-4" />
+        <p className="text-slate-500 font-medium animate-pulse">Initializing secure checkout...</p>
+      </div>
+    );
+  }
 
   if (!service || !selectedPackage) {
     return (

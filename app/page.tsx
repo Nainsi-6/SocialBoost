@@ -1,7 +1,8 @@
 'use client';
 
 import { useState } from 'react';
-import { getAllServices } from '@/lib/services-data';
+import { getAllServices, getServicesWithDynamicIds } from '@/lib/services-data';
+import { useServiceIds } from '@/hooks/use-service-ids';
 import ServiceCard from '@/components/ServiceCard';
 import Banner from '@/components/Banner';
 import Sidebar from '@/components/Sidebar';
@@ -10,12 +11,19 @@ import { YouTubeVideo } from '@/components/YouTubeVideo';
 import { Zap, ShieldCheck, BadgeCheck, Headphones, Youtube } from "lucide-react";
 
 export default function Home() {
-  const services = getAllServices();
+  const { serviceIdMap, isLoading } = useServiceIds();
+  const services = getServicesWithDynamicIds(serviceIdMap);
   const [isOpen, setIsOpen] = useState(false);
   const [isVideoModalOpen, setIsVideoModalOpen] = useState(false);
 
   return (
-    <div className="min-h-screen bg-slate-50 text-gray-900">
+    <div className="min-h-screen bg-slate-50 text-gray-900 relative">
+      {isLoading && (
+        <div className="fixed inset-0 z-[100] bg-white/60 backdrop-blur-sm flex flex-col items-center justify-center animate-in fade-in duration-500">
+          <div className="w-16 h-16 border-4 border-indigo-600 border-t-transparent rounded-full animate-spin mb-4 shadow-lg shadow-indigo-200" />
+          <p className="text-slate-600 font-bold tracking-tight">Setting up your growth...</p>
+        </div>
+      )}
       <Sidebar isOpen={isOpen} setIsOpen={setIsOpen} />
 
       {/* ===== HERO BANNER ===== */}

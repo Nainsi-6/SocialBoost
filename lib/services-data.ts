@@ -251,3 +251,64 @@ export function getPrimaryService(): Service | undefined {
   return services.find((s) => s.isPrimary);
 }
 
+// ─────────────────────────────────────────────────────────────────────────────
+// Dynamic Service ID resolution
+// ─────────────────────────────────────────────────────────────────────────────
+
+/**
+ * These are the SMM service IDs actively managed in the backend JSON file.
+ * Any package whose ssmServiceId is in this set will have its ID replaced
+ * by the value fetched from the API for its category.
+ */
+export const KNOWN_SMM_IDS = new Set<number>([10183, 12587, 602, 670, 2, 3, 4, 5, 6]);
+
+/** category → numeric SMM service ID, optionally platform-scoped */
+export type ServiceIdMap = Record<string, number>;
+
+/**
+ * Returns a copy of the full `services` array where every package whose
+ * `ssmServiceId` is a known backend-managed ID has been replaced with the
+ * value from `serviceIdMap` for its `serviceCategory`.
+ *
+ * Lookup order for each package:
+ *   1. `serviceIdMap["{platform}_{category}"]`  e.g. "instagram_followers"
+ *   2. `serviceIdMap["{category}"]`             e.g. "followers"
+ *   3. Original hardcoded value (no change)
+ *
+ * Example usage (client component):
+ *   const { serviceIdMap } = useServiceIds()
+ *   const liveServices = getServicesWithDynamicIds(serviceIdMap)
+ *
+ * Example usage (server component):
+ *   const map = await fetchServiceIdMap()
+ *   const liveServices = getServicesWithDynamicIds(map)
+ */
+export function getServicesWithDynamicIds(serviceIdMap: ServiceIdMap): Service[] {
+  if (!serviceIdMap || Object.keys(serviceIdMap).length === 0) {
+    return services;
+  }
+
+  return services.map((service) => {
+    return {
+      ...service,
+      packages: service.packages.map((pkg) => {
+        const category = pkg.serviceCategory as string | undefined;
+        if (!category) return pkg;
+
+        // Try platform-specific key first, then generic category key
+        const platformKey = `${service.id}_${category}`;
+        const dynamicId = serviceIdMap[platformKey] ?? serviceIdMap[category];
+
+        // Replace if:
+        // 1. We found a dynamic ID in the map
+        // 2. AND (the package has no ID yet OR it's one of the tracked IDs we want to swap)
+        const isTracked = !pkg.ssmServiceId || KNOWN_SMM_IDS.has(pkg.ssmServiceId);
+
+        if (dynamicId !== undefined && isTracked && dynamicId !== pkg.ssmServiceId) {
+          return { ...pkg, ssmServiceId: dynamicId };
+        }
+        return pkg;
+      }),
+    };
+  });
+}
